@@ -43,3 +43,35 @@ Each of the movement functions were programmed by enabling the EN pins as needed
 
 The techniques above were implemented to the MSP430 included with the robot using Code Composer Studio v6. The code used on the robot is provided in the Lab6 repository. To create the delays I mentioned, I used a while() loop and a counter. While this isn't the best way to create such a delay, it works and I was more familiar with it than using for() loops or other delays. The physical pins were connected as follows on the robot:
 
+SN754410 Pin | MSP430 Pin | Motor Pin | Motor | Use
+-----|-----|-----|-----|-----
+1 (1,2EN) | P2.0 | - | L | Enables Motor
+2 (1A) | P2.2 | - | L | PWM signal into Motor Dirver
+3 (1Y) | - | L RED | L | PWM signal out of Motor Driver
+4 (GND) | - | - | - | Ground Pin
+5 (GND) | - | - | - | Ground Pin
+6 (2Y) | - | L BLK | L | Direction signal out of Motor Driver
+7 (2A) | P2.1 | - | L | Direction signal into Motor Driver
+8 (Vcc2) | - | - | - | 12V into Motor Driver to power motors
+9 (3,4EN) | P2.5 | - | R | Enables Motor
+10 (3A) | P2.4 | - | R | PWM signal into Motor Driver
+11 (3Y) | - | R RED | R | PWM signal out of Motor Driver
+12 (GND) | - | - | - | Ground Pin
+13 (GND) | - | - | - | Ground Pin
+14 (4Y) | - | R BLK | R | Direction signal out of Motor Driver
+15 (4A) | P2.3 | - | R | Direction signal into Motor Driver
+16 (Vcc1) | - | - | - | 5V into Motor Driver to power chip
+
+Another hurdle to implementing this design was to power the robot on its own without a connection to the computer. I didn't have to worry about the code because the code always starts from the beginning upon pressing the physical reset button on the MSP430, but I did have to worry about powering the MSP430. With a provided 3.3V regulator, I connected input to 5V from the battery, and output to the Vcc input pin of the MSP430. When using this technique, it was important to disconnect the Vcc jumper on the MSP430 chip when the USB was connected. By disconnecting this, all of the power to the chip was supplied by the USB, so that there wouldn't be competing power sources. When the robot was disconnected, though, the jumper needed to be reattached so that the batteries could power the chip. 
+
+### Debugging
+
+I encountered several issues with this Lab. After successfully achieving forward motion and stopping the motors after a certain amount of time, I moved on to program backward motion. After programming this, I noticed one motor would spin backward correctly while the other would not. I tried several modifications to the code which eventually resulted in a CCS error in which the Lab6.out file would not load to the MSP430. This was essentially one problem that became 2 problems. The .out file error was fixed by replacing the MSP430 and subsequently moving the Vcc jumper based on whether or not the USB was plugged in. After attempting to move on and program the rest of the movements I discovered the same motor which originally would not turn backwards continued to fail in subsequent movements. I then realized that I plugged the PWM output wire for that pin into the wrong pin on the breadboard - I was trying to power the motor from the 3.3V digital output of the MSP430! Moving the wire over from 1A to 1Y solved the issue. 
+
+After several days of testing, I only seemed to make backward progress. On the last day of functionality, the robot would not even move forward correctly. By Capt Trimble's suggestion, I connected an oscilloscope to the pins where I should have been getting a PWM signal, only to find that there was no PWM signal being generated. After triple-checking my code against the device-specific manual, I decided that there must be something inhibiting the chip from creating the PWM signal. I replaced the chip to test how a new chip would behave, then on the first test the robot performed perfectly. I decided another clumsy power dissipation mistake I made earlier must have been the cause. 
+
+### Documentation
+
+Started with code from Dr Coulston's website: http://ecse.bd.psu.edu/cmpen352/lecture/code/lab6.c as a framework for my code.
+
+Received help from C2C Sean Gavan on the usage and implementation of successful functions in C. 
