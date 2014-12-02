@@ -18,3 +18,9 @@ Pin | Type | Motor | Use
 2.3 | GPIO | R | Directional pin
 2.4 | PWM | R | Power PWM signal
 2.5 | GPIO | R | Enable
+
+### Lab
+
+#### Design
+
+Much of the design work was already laid out in the prefabricated robot. All that was left to do was to connect the MSP430 with the Motor Driver chip, and the motor chip with the inputs for the motors.
